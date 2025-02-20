@@ -16,7 +16,7 @@ public class CurrencyDao {
     private static final CurrencyDao INSTANCE = new CurrencyDao();
 
     private static final String FIND_ALL_SQL = """
-            SELECT id, code, full_name, sign  FROM currencies
+            SELECT id, code, full_name, sign  FROM currancy_database.public.currencies
             """;
 
     public static CurrencyDao getInstance() {

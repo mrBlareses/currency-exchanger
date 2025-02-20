@@ -29,8 +29,14 @@ public final class ConnectionManager {
 
     private static void initConnectionPool() {
         String poolSize = PropertiesUtil.get("db.pool.size");
-        int size = poolSize == null ? DEFAULT_POOL_SIZE : Integer.parseInt(poolSize);
-        pool = new ArrayBlockingQueue(size);
+        int size;
+        try {
+            size = poolSize == null ? DEFAULT_POOL_SIZE : Integer.parseInt(poolSize);
+        } catch (NumberFormatException e) {
+            throw new DataBaseConnectException("Некорректный формат", e);
+        }
+
+        pool = new ArrayBlockingQueue<>(size);
         for (int i = 0; i < size; i++) {
             Connection connection = open();
             var proxyConnection = (Connection) Proxy.newProxyInstance(ConnectionManager.class.getClassLoader(),
@@ -46,18 +52,19 @@ public final class ConnectionManager {
         try {
             return pool.take();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new GetConnactionException("Отсутствует подключение");
         }
     }
 
-    private static Connection open() {
+    private static Connection open() throws RuntimeException {
         try {
             return DriverManager.getConnection(
                     PropertiesUtil.get(URL_KEY),
                     PropertiesUtil.get(USER_KEY),
                     PropertiesUtil.get(PASSWORD_KEY));
         } catch (SQLException e) {
-            throw new DataBaseConnectException("Ошбика при подключении к базе данных");
+            throw new RuntimeException();
         }
     }
 }
