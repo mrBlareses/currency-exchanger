@@ -25,9 +25,8 @@ public class CurrencyDao {
     public List<Currency> findAll() throws SqlQuarryException {
 
         System.out.println("Получение соединения с БД...");
-        try {
-            Connection connection = ConnectionManager.getConnection();
-            PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL);
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet result = statement.executeQuery();
             return extractCurrency(result);
 
