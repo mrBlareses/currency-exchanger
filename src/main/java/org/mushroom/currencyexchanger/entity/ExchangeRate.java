@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ExchangeRate {
     private long id;
     private String baseCurrencyId;

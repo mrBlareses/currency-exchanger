@@ -8,7 +8,6 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Currency {
     private long id;
     private String code;

@@ -7,7 +7,6 @@ import org.mushroom.currencyexchanger.exception.InvalidPropertiesException;
 import java.io.IOException;
 import java.util.Properties;
 
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PropertiesUtil {
     private static final Properties PROPERTIES = new Properties();
@@ -26,8 +25,6 @@ public class PropertiesUtil {
     }
 
     public static String get(String key) {
-        String property = PROPERTIES.getProperty(key);
-        return property;
-
+        return PROPERTIES.getProperty(key);
     }
 }

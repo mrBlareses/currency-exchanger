@@ -1,8 +1,7 @@
 package org.mushroom.currencyexchanger.dao;
 
 import org.mushroom.currencyexchanger.entity.Currency;
-import org.mushroom.currencyexchanger.exception.DaoException;
-import org.mushroom.currencyexchanger.exception.GetConnactionException;
+import org.mushroom.currencyexchanger.exception.SqlQuarryException;
 import org.mushroom.currencyexchanger.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -16,37 +15,42 @@ public class CurrencyDao {
     private static final CurrencyDao INSTANCE = new CurrencyDao();
 
     private static final String FIND_ALL_SQL = """
-            SELECT id, code, full_name, sign  FROM currancy_database.public.currencies
+            SELECT * FROM currency_database.public.currencies
             """;
 
     public static CurrencyDao getInstance() {
         return INSTANCE;
     }
 
-    public List<Currency> findAll() {
+    public List<Currency> findAll() throws SqlQuarryException {
 
+        System.out.println("Получение соединения с БД...");
         try {
-            Connection connection = ConnectionManager.get();
+            Connection connection = ConnectionManager.getConnection();
             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL);
             ResultSet result = statement.executeQuery();
+            return extractCurrency(result);
 
-            List<Currency> currencies = new ArrayList<>();
-            while (result.next()) {
-                currencies.add(new Currency(
-                        result.getLong("id"),
-                        result.getString("code"),
-                        result.getString("full_name"),
-                        result.getString("sign")));
-            }
-            System.out.println("Полученные валюты:");
-            currencies.forEach(System.out::println);
-
-            return currencies;
         } catch (SQLException e) {
-            throw new DaoException("Ошибка при выполнении запроса");
-        } catch (GetConnactionException e) {
-            throw new RuntimeException("1");
+            throw new SqlQuarryException("Ошибка при выполнении запроса", e);
         }
     }
+
+    private List<Currency> extractCurrency(ResultSet resultSet) throws SQLException {
+        List<Currency> result = new ArrayList<>();
+        while (resultSet.next()) {
+            result.add(mapRow(resultSet));
+        }
+        return result;
+    }
+
+    private Currency mapRow(ResultSet resultSet) throws SQLException {
+        return new Currency(resultSet.getLong("id"),
+                resultSet.getString("code"),
+                resultSet.getString("full_name"),
+                resultSet.getString("sign")
+        );
+    }
 }
+
 
