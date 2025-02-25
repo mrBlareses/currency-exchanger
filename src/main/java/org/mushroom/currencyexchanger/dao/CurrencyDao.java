@@ -1,7 +1,7 @@
 package org.mushroom.currencyexchanger.dao;
 
 import org.mushroom.currencyexchanger.entity.Currency;
-import org.mushroom.currencyexchanger.exception.SqlQuarryException;
+import org.mushroom.currencyexchanger.exception.SqlQueryException;
 import org.mushroom.currencyexchanger.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -22,16 +22,13 @@ public class CurrencyDao {
         return INSTANCE;
     }
 
-    public List<Currency> findAll() throws SqlQuarryException {
-
-        System.out.println("Получение соединения с БД...");
+    public List<Currency> findAll() throws SqlQueryException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet result = statement.executeQuery();
             return extractCurrency(result);
-
         } catch (SQLException e) {
-            throw new SqlQuarryException("Ошибка при выполнении запроса", e);
+            throw new SqlQueryException("Ошибка при выполнении запроса", e);
         }
     }
 

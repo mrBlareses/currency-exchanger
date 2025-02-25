@@ -1,4 +1,5 @@
 package org.mushroom.currencyexchanger.entity;
+
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,5 +14,4 @@ public class ExchangeRate {
     private String baseCurrencyId;
     private String targetCurrencyId;
     private BigDecimal rate;
-
 }

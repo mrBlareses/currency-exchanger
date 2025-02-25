@@ -1,6 +1,5 @@
 package org.mushroom.currencyexchanger.entity;
 
-
 import lombok.*;
 
 @Getter

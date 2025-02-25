@@ -1,6 +1,5 @@
 package org.mushroom.currencyexchanger.controller;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @WebServlet("/api/currencies")
 public class CurrencyController extends HttpServlet {
-
     private final CurrencyService currencyService = new CurrencyService();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
