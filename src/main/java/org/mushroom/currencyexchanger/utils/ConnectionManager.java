@@ -15,10 +15,10 @@ public final class ConnectionManager {
     static {
         HikariConfig hikariConfig = new HikariConfig();
 
-        hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/currency_database");
-        hikariConfig.setDriverClassName("org.postgresql.Driver");
-        hikariConfig.addDataSourceProperty("user", "postgres");
-        hikariConfig.addDataSourceProperty("password", "admin");
+        hikariConfig.setJdbcUrl(PropertiesUtil.get("db.url"));
+        hikariConfig.setDriverClassName(PropertiesUtil.get("db.driver"));
+        hikariConfig.setUsername(PropertiesUtil.get("db.username"));
+        hikariConfig.setPassword(PropertiesUtil.get("db.password"));
 
         HIKARI_DATA_SOURCE = new HikariDataSource(hikariConfig);
     }

@@ -1,6 +1,5 @@
 package org.mushroom.currencyexchanger.dto;
 
-
 import lombok.Data;
 import org.mushroom.currencyexchanger.entity.Currency;
 
@@ -12,11 +11,11 @@ public class CurrencyDto {
     private String sign;
 
     public static CurrencyDto fromCurrency(Currency currency) {
-        CurrencyDto dto = new CurrencyDto();
-        dto.setId(currency.getId());
-        dto.setCode(currency.getCode());
-        dto.setFullName(currency.getFullName());
-        dto.setSign(currency.getSign());
-        return dto;
+        CurrencyDto currencyDto = new CurrencyDto();
+        currencyDto.setId(currency.getId());
+        currencyDto.setCode(currency.getCode());
+        currencyDto.setFullName(currency.getFullName());
+        currencyDto.setSign(currency.getSign());
+        return currencyDto;
     }
 }
