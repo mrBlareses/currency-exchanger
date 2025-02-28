@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
 public class ExchangeRate {
     private long id;

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.mushroom.currencyexchanger.dto.CurrencyDto;
+import org.mushroom.currencyexchanger.dto.ErrorResponseDto;
 import org.mushroom.currencyexchanger.dto.NewCurrencyPayload;
 import org.mushroom.currencyexchanger.exception.SqlQueryException;
 import org.mushroom.currencyexchanger.service.CurrencyService;
@@ -25,42 +26,29 @@ public class CurrencyController extends HttpServlet {
         res.setContentType(CONTENT_TYPE_JSON);
         res.setCharacterEncoding("UTF-8");
 
-        List<CurrencyDto> result;
         try {
-            result = currencyService.getAllCurrencies();
+            List<CurrencyDto> result = currencyService.getAllCurrencies();
+            objectMapper.writeValue(res.getWriter(), result);
         } catch (SqlQueryException e) {
-            try {
-                throw new SqlQueryException("Ошибка при получении списка валют");
-            } catch (SqlQueryException ex) {
-                throw new RuntimeException(ex);
-            }
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            objectMapper.writeValue(res.getWriter(),
+                    new ErrorResponseDto(500, "Ошибка при получении списка валют"));
         }
-        objectMapper.writeValue(res.getWriter(), result);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        NewCurrencyPayload newCurrencyPayload;
+        NewCurrencyPayload newCurrencyPayload = objectMapper.readValue(req.getReader(), NewCurrencyPayload.class);
 
-        if (CONTENT_TYPE_JSON.equalsIgnoreCase(req.getContentType())) {
-            newCurrencyPayload = objectMapper.readValue(req.getReader(), NewCurrencyPayload.class);
-        } else {
-            String code = req.getParameter("code");
-            String name = req.getParameter("name");
-            String sign = req.getParameter("sign");
-            newCurrencyPayload = new NewCurrencyPayload(code, name, sign);
-        }
-
-        CurrencyDto newCurrency = null;
         try {
-            newCurrency = currencyService.createCurrency(newCurrencyPayload);
+            CurrencyDto currencyDto = currencyService.createCurrency(newCurrencyPayload);
+            res.setContentType(CONTENT_TYPE_JSON);
+            res.setStatus(HttpServletResponse.SC_CREATED);
+            objectMapper.writeValue(res.getWriter(), currencyDto);
         } catch (SqlQueryException e) {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             objectMapper.writeValue(res.getWriter(),
                     Map.of("error", "Ошибка при сохранении валюты", "details", e.getMessage()));
         }
-        res.setContentType(CONTENT_TYPE_JSON);
-        res.setStatus(HttpServletResponse.SC_CREATED);
-        objectMapper.writeValue(res.getWriter(), newCurrency);
     }
 }

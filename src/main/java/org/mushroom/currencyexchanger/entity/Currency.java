@@ -4,8 +4,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
 public class Currency {
     private Long id;

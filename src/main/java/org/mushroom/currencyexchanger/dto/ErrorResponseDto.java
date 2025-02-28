@@ -2,12 +2,10 @@ package org.mushroom.currencyexchanger.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ErrorResponseDto {
-    private Integer code;
+    private int code;
     private String message;
 }

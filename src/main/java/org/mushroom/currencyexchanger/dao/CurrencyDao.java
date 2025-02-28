@@ -13,12 +13,6 @@ import java.util.List;
 import static org.postgresql.core.SqlCommandType.SELECT;
 
 public class CurrencyDao {
-    private static final CurrencyDao INSTANCE = new CurrencyDao();
-
-    public static CurrencyDao getInstance() {
-        return INSTANCE;
-    }
-
     private List<Currency> extractCurrency(ResultSet resultSet) throws SQLException {
         List<Currency> result = new ArrayList<>();
         while (resultSet.next()) {
@@ -36,9 +30,7 @@ public class CurrencyDao {
     }
 
     public List<Currency> findAll() throws SqlQueryException {
-        final String FIND_ALL_SQL = """
-                SELECT * FROM currency_database.public.currencies
-                """;
+        final String FIND_ALL_SQL = "SELECT * FROM currency_database.public.currencies";
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL)) {
@@ -49,7 +41,7 @@ public class CurrencyDao {
         }
     }
 
-    public List<Currency> findById(Long id) throws SqlQueryException {
+    public List<Currency> findById(long id) throws SqlQueryException {
         final String FIND_BI_ID_SQL = """
                 SELECT * FROM currency_database.public.currencies
                             WHERE currencies.id = ?
@@ -81,7 +73,7 @@ public class CurrencyDao {
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
-                throw new InternalServerException("Ошибка: ни одна строка не была изменена при добавлении валюты");
+                System.err.println("Предупреждение: INSERT не затронул ни одной строки, возможно, данные уже существуют.");
             }
 
             try (ResultSet resultSet = statement.getGeneratedKeys()) {
